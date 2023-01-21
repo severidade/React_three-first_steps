@@ -4,6 +4,8 @@ import './App.css';
 import React, { Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Image } from "@react-three/drei";
+import { useAspect, useVideoTexture, useTexture } from '@react-three/drei'
+
 import { EffectComposer, Scanline, Noise, Bloom, Glitch, DotScreen } from "@react-three/postprocessing";
 
 import { BlendFunction } from 'postprocessing'
@@ -15,6 +17,7 @@ import BoxThree from "./componentes/BoxThree";
 
 import img01 from "./img/1.png"
 import logo from "./img/ai.png"
+import videobg from "./video/grafic_video.mp4"
 
 
 const characters = [
@@ -22,6 +25,7 @@ const characters = [
     mugshot: img01,
     id: "79c909145b09e54c80f22a83fc94be848f4f899a",
     name: "Grace Arbor",
+    video: videobg,
     class: "Human",
     occupation: "Courier",
     employer: "North Pacific Parcel Corporation",
@@ -35,22 +39,23 @@ Awaiting results of high temporal granularity analysis.`
 export default function App() {
   return (
     <Canvas>
+      <Scene />
       <directionalLight intensity={0.5} />
       <BoxThree />
-      <Image 
+      {/* <Image 
         url={characters[0].mugshot} 
         scale={[2, 4]}
         position={[3, 0, 0]}
         transparent
         opacity={0.8}
-      />
-      <Image 
+      /> */}
+      {/* <Image 
         url={logo}
         scale={[8, 7]}
         position={[0, 0, 0]}
         transparent
         opacity={0.2}
-      />
+      /> */}
       <Suspense fallback={null}>
         <Text
           fontSize={1}
@@ -147,11 +152,11 @@ export default function App() {
           density={0.8} // scanline density
           opacity={0.1}
         /> */}
-        <Noise 
+        {/* <Noise 
           premultiply 
           blendFunction={BlendFunction.ADD}
           opacity={2}
-        />
+        /> */}
         {/* <Bloom
           intensity={2} // The bloom intensity.
           blurPass={undefined} // A blur pass.
@@ -178,4 +183,26 @@ export default function App() {
       </EffectComposer>
     </Canvas>
   );
+}
+
+function Scene() {
+  const size = useAspect(1800, 1000)
+  return (
+    <mesh scale={size}>
+      <planeGeometry />
+      <Suspense fallback={<FallbackMaterial url="10.jpg" />}>
+        <VideoMaterial url={videobg} />
+      </Suspense>
+    </mesh>
+  )
+}
+
+function VideoMaterial({ url }) {
+  const texture = useVideoTexture(url)
+  return <meshBasicMaterial map={texture} toneMapped={false} />
+}
+
+function FallbackMaterial({ url }) {
+  const texture = useTexture(url)
+  return <meshBasicMaterial map={texture} toneMapped={false} />
 }
