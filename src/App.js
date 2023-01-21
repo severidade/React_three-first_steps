@@ -3,12 +3,16 @@ import './App.css';
 
 import React, { Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
+import { Text, Image } from "@react-three/drei";
 import BoxThree from "./componentes/BoxThree";
+
+import img01 from "./img/1.png"
+import logo from "./img/ai.png"
+
 
 const characters = [
   {
-    mugshot: "1.png",
+    mugshot: img01,
     id: "79c909145b09e54c80f22a83fc94be848f4f899a",
     name: "Grace Arbor",
     class: "Human",
@@ -26,6 +30,20 @@ export default function App() {
     <Canvas>
       <directionalLight intensity={0.5} />
       <BoxThree />
+      <Image 
+        url={characters[0].mugshot} 
+        scale={[2, 4]}
+        position={[3, 0, 0]}
+        transparent
+        opacity={0.8}
+      />
+      <Image 
+        url={logo}
+        scale={[8, 7]}
+        position={[0, 0, 0]}
+        transparent
+        opacity={0.2}
+      />
       <Suspense fallback={null}>
         <Text
           fontSize={1}
